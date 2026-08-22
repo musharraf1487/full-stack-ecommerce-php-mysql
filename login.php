@@ -1,6 +1,5 @@
 <?php
 require("includes/common.php");
-// Redirects the user to products page if logged in.
 if (isset($_SESSION['email'])) {
     header('location: products.php');
 }
@@ -20,11 +19,11 @@ if (isset($_SESSION['email'])) {
     </head>
 
     <body>
-        <?php include 'header.php'; ?>
+        <?php include 'includes/header.php'; ?>
         <div id="content">
             <div class="container-fluid decor_bg" id="login-panel">
                 <div class="col-lg-4 col-md-6">
-                    <img src="img/yess.jpg">
+                    <img src="img/source.gif">
                 </div>
                 <div class="row">
                     <div class="col-lg-4 col-lg-offset-3 col-md-4">

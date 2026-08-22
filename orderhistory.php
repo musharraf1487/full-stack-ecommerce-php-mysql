@@ -24,7 +24,6 @@ if (!isset($_SESSION['email'])) {
                 <div class="col-md-6">
                     <table class="table table-striped">
     
-                        <!--show table only if there are items added in the cart-->
                         <?php
                         $sum = 0;$id='';
                         $user_id = $_SESSION['user_id'];

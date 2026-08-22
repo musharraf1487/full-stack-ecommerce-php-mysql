@@ -1,0 +1,9 @@
+# Windows / macOS junk
+Thumbs.db
+ehthumbs.db
+.DS_Store
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp

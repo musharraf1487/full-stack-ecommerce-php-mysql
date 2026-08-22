@@ -28,9 +28,9 @@ include 'includes/header.php';
     <div class="col-lg">
         <div style="float: right;">
             <h1>COMPANY INFORMATION</h1><br>
-            <p id="p1">Bengaluru, India - 560011</p><br>
-            <p id="p1">Phone : +91 9302385479</p><br>
-            <p id="p1">Email : support@lifestylestore.com</p>
+            <p id="p1">IST Pakistan</p><br>
+            <p id="p1">Phone : +923468558793</p><br>
+            <p id="p1">Email : musharraf1487@gmail.com</p>
         </div>
         <h1>CONTACT US</h1>
         <div style="float: left;">
