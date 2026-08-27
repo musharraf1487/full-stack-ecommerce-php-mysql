@@ -342,6 +342,38 @@ production:
 
 ## Credits
 
-Originally based on an open-source e-commerce PHP project, then extended and customised — new About
-and Contact pages, updated branding, imagery, styling and content, and a reorganised
-`css/ js/ img/ includes/` project layout.
+### Upstream project
+
+This project builds on
+[eCommerce-website-using-HTML-CSS-PHP-and-MySQL-database](https://github.com/VishwaduttMS/eCommerce-website-using-HTML-CSS-PHP-and-MySQL-database)
+by Vishwadutt M S (2020), which supplied the original page set, the MySQL schema, and the
+session/cart/order logic that this version still rests on. The upstream repository carries no
+licence file, so it is used here for coursework rather than redistribution, and its original
+commit history is preserved intact in this repository.
+
+### Third-party components
+
+- **Bootstrap 3** and **Glyphicons Halflings** — MIT licence
+- **jQuery** — MIT licence
+- Product and banner imagery — see `img/`
+
+### What I contributed
+
+- **Project structure.** Flat upstream root reorganised into `css/`, `js/`, `img/`, `fonts/`,
+  `includes/`, `database/` and `screenshots/`, with all include paths rewritten to match.
+- **Documentation.** This README — feature list, tech stack, schema walkthrough, request-flow
+  explanation, setup instructions, demo accounts and a known-limitations audit — plus
+  `screenshots/` covering all ten interface pages.
+- **Branding and content.** Rebranded to *Lifestyle Store*: rewritten About and Contact page copy,
+  new imagery, restyled layout, and updated contact details throughout.
+- **Bug fixes.** Removed a stray `?>` in `includes/header.php` that rendered literally in the navbar
+  for logged-in users; corrected the login page image reference (`img/source.GIF` → `img/source.gif`)
+  so it resolves on case-sensitive filesystems.
+- **Repository hygiene.** Added `.gitignore` and removed the committed `Thumbs.db`.
+
+Across 91 files, the changes total roughly 9,800 insertions against the upstream baseline. To see
+them directly:
+
+```bash
+git diff 9652f95 HEAD --stat
+```
