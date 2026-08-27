@@ -1,383 +1,157 @@
-# Lifestyle Store — E-Commerce Website
+# Lifestyle Store
 
-A multi-page e-commerce web application built with **HTML, CSS, Bootstrap 3, jQuery, PHP and MySQL**.
-Users can browse a product catalogue, register and log in, add items to a cart, confirm an order,
-review their order history, and change their password.
+An online store built with PHP and MySQL for my Database Systems course. You can browse products,
+register, log in, add things to a cart, place an order, and look back at your order history.
 
-Built as a Database Systems (DBS) course project.
-
----
-
-## Table of Contents
-
-- [Screenshots](#screenshots)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Database Design](#database-design)
-- [How It Works](#how-it-works)
-- [Setup & Installation](#setup--installation)
-- [Demo Accounts](#demo-accounts)
-- [Known Limitations](#known-limitations)
-- [Credits](#credits)
-
----
+Stack: HTML, CSS, Bootstrap 3, jQuery, PHP (procedural mysqli), MySQL/MariaDB.
 
 ## Screenshots
 
-### Home page
-The landing page for visitors who are not logged in — hero banner plus the three product categories
-(Cameras, Watches, Shirts), each linking into the matching anchor on the products page.
+**Home page**
 
 ![Home page](screenshots/01-home.jpg)
 
-### Products page
-The full catalogue of 12 items across three categories. When a user is logged in, each card shows an
-**Add to cart** button; items already in the cart render as a disabled green **Added to cart** button.
-Visitors who are not logged in see a **Buy Now** button that redirects them to the login page instead.
+**Products**
 
 ![Products page](screenshots/02-products.jpg)
 
-![Products page — shirts section](screenshots/03-products-shirts.jpg)
+![Shirts section](screenshots/03-products-shirts.jpg)
 
-### Login
+**Login and sign up**
+
 ![Login page](screenshots/04-login.jpg)
-
-### Sign up
-Client-side HTML5 `pattern` validation on name, e-mail, password strength and contact number, backed by
-server-side regex validation in `signup_script.php`.
 
 ![Sign up page](screenshots/05-signup.jpg)
 
-### Cart
-Lists every item the user has added (status `Added to cart`), computes the running total, and offers a
-per-row **Remove** link plus a **Confirm Order** action.
+**Cart and checkout**
 
 ![Cart page](screenshots/06-cart.jpg)
 
-### Order confirmation
 ![Order success page](screenshots/08-order-success.jpg)
 
-### Order history
-Every confirmed order for the logged-in user, with price and timestamp.
+**Order history**
 
 ![Order history page](screenshots/07-order-history.jpg)
 
-### Settings — change password
+**Settings**
+
 ![Settings page](screenshots/09-settings.jpg)
 
-### About us
+**About and contact**
+
 ![About us page](screenshots/10-about-us.jpg)
 
-### Contact
 ![Contact page](screenshots/11-contact.jpg)
 
----
+## What it does
 
-## Features
+- Sign up with validation on the email, password and phone number. Duplicate emails get rejected.
+- Session based login and logout.
+- 12 products across cameras, watches and shirts.
+- Search products by name, with category, price range and sort filters.
+- Add and remove cart items, with a running total. The same item can't be added twice.
+- Confirm an order, which flips those cart rows to Confirmed.
+- Order history with timestamps and a total.
+- Change your password after verifying the old one.
+- Cart, settings, order history and success pages bounce you to the home page if you aren't logged in.
+- The navbar changes depending on whether you're logged in.
 
-| Area | Description |
-| --- | --- |
-| **User registration** | Sign-up form with e-mail, password-strength and phone-number validation. Duplicate e-mails are rejected. |
-| **Authentication** | Session-based login/logout. Passwords are hashed before being stored. |
-| **Product catalogue** | 12 products in 3 categories (Cameras, Watches, Shirts), served from the `items` table. |
-| **Product search** | Search by name with category, price-range and sort filters. Built on prepared statements, so search input is bound rather than interpolated. |
-| **Shopping cart** | Add and remove items, live total calculation, and a guard so the same item cannot be added twice. |
-| **Order placement** | Confirming the cart flips those rows to `Confirmed` and shows a thank-you page. |
-| **Order history** | Table of all confirmed orders for the logged-in user, with timestamps and a grand total. |
-| **Account settings** | Change password with old-password verification and new-password confirmation. |
-| **Access control** | Cart, settings, order history and success pages redirect guests back to the home page. |
-| **Adaptive navbar** | The header renders a different menu depending on whether a session is active. |
-| **Responsive layout** | Bootstrap 3 grid, so the site reflows on tablets and phones. |
+## Database
 
----
+The database is called `store` and has three tables.
 
-## Tech Stack
+**items** - the products. `id`, `name`, `category`, `price`, `image`.
 
-| Layer | Technology |
-| --- | --- |
-| Front end | HTML5, CSS3, Bootstrap 3, jQuery |
-| Back end | PHP (procedural, `mysqli`) |
-| Database | MySQL / MariaDB |
-| Server | Apache (XAMPP / MAMP / WAMP) or PHP's built-in dev server |
+**users** - registered customers. `id`, `name`, `email`, `password` (MD5), `contact`, `city`, `address`.
 
----
+**user_item** - links users to items. `id`, `user_id`, `item_id`, `status`, `date_time`.
 
-## Project Structure
-
-```
-.
-├── index.php              # Landing page (redirects to products.php if logged in)
-├── products.php           # Product catalogue with add-to-cart buttons
-├── search.php             # Product search with category/price/sort filters
-├── login.php              # Login form
-├── login_submit.php       # Verifies credentials, creates the session
-├── signup.php             # Registration form
-├── signup_script.php      # Validates input and inserts the new user
-├── logout_script.php      # Destroys the session
-├── cart.php               # Cart contents + running total + Confirm Order
-├── cart-add.php           # Inserts an item into the cart
-├── cart-remove.php        # Deletes an item from the cart
-├── success.php            # Marks cart rows Confirmed, shows thank-you page
-├── order.php              # Single-order confirmation view
-├── order_script.php       # Inserts an item directly as a confirmed order
-├── orderhistory.php       # Lists all confirmed orders for the user
-├── settings.php           # Change-password form
-├── settings_script.php    # Verifies the old password and updates it
-├── aboutus.php            # Static About page
-├── contact.php            # Static Contact page + enquiry form
-│
-├── includes/
-│   ├── common.php         # DB connection + session bootstrap (required by every page)
-│   ├── header.php         # Navbar, rendered per login state
-│   ├── footer.php         # Footer + Google Translate widget
-│   ├── check-if-added.php # check_if_added_to_cart($item_id) helper
-│   └── product-card.php   # render_product_card($item) thumbnail renderer
-│
-├── database/
-│   ├── store.sql          # Schema + seed data (phpMyAdmin dump)
-│   └── migrations/
-│       └── 001_add_product_search.sql   # Adds items.category, items.image + indexes
-│
-├── css/                   # bootstrap.css, bootstrap.min.css, style.css, index.css
-├── js/                    # jquery.js, bootstrap.js, bootstrap.min.js
-├── fonts/                 # Glyphicons webfont files used by Bootstrap
-├── img/                   # Product photos, banners and page illustrations
-└── screenshots/           # Interface screenshots used in this README
-```
-
----
-
-## Database Design
-
-The database is named **`store`** and holds three tables.
-
-### `items` — the product catalogue
-
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | `int(11)` | Primary key, auto-increment |
-| `name` | `varchar(255)` | Product name |
-| `price` | `int(11)` | Price in rupees |
-
-### `users` — registered customers
-
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | `int(11)` | Primary key, auto-increment |
-| `name` | `varchar(255)` | Full name |
-| `email` | `varchar(255)` | Used as the login identifier |
-| `password` | `varchar(255)` | Stored as an MD5 hash |
-| `contact` | `varchar(255)` | 10-digit phone number |
-| `city` | `varchar(255)` | |
-| `address` | `varchar(255)` | |
-
-### `user_item` — the join table (cart *and* order lines)
-
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | `int(11)` | Primary key, auto-increment |
-| `user_id` | `int(11)` | References `users.id` |
-| `item_id` | `int(11)` | References `items.id` |
-| `status` | `enum('Added to cart','Confirmed')` | `1` = in cart, `2` = ordered |
-| `date_time` | `datetime` | Defaults to `CURRENT_TIMESTAMP` |
-
-This single table models the **many-to-many** relationship between users and items. The `status`
-column is what separates a *cart* from an *order* — there is no separate orders table. A row starts
-life as `Added to cart` and is promoted to `Confirmed` at checkout, and `date_time` therefore doubles
-as the order timestamp.
+`user_item` is the interesting one. It's a many-to-many join between users and items, and it stores
+the cart *and* the orders in the same place. There's no separate orders table. A row is created with
+status `Added to cart`, and checkout promotes it to `Confirmed`, so `date_time` ends up being the
+order timestamp too.
 
 ```
 users ──1───< user_item >───1── items
                   │
-                  └── status: 'Added to cart' → cart
-                             'Confirmed'     → order history
+                  ├── 'Added to cart'  → cart
+                  └── 'Confirmed'      → order history
 ```
 
----
+## Setup
 
-## How It Works
+You need Apache, PHP and MySQL. XAMPP, MAMP or WAMP all work.
 
-### Bootstrapping every request
+1. Clone the project into your web root, e.g. `C:/xampp/htdocs/lifestyle-store` on Windows or
+   `/Applications/XAMPP/htdocs/lifestyle-store` on Mac.
 
-Every page starts with `require("includes/common.php")`, which opens the `mysqli` connection and
-starts the PHP session if one is not already running. The session carries two values — `$_SESSION['email']`
-and `$_SESSION['user_id']` — and their presence is what the whole app treats as "logged in".
+2. Start Apache and MySQL, then create the database and import the dump:
 
-### Registration → login
+   ```bash
+   mysql -u root -p -e "CREATE DATABASE store;"
+   mysql -u root -p store < database/store.sql
+   mysql -u root -p store < database/migrations/001_add_product_search.sql
+   ```
 
-1. `signup.php` posts to `signup_script.php`.
-2. The script escapes every field, hashes the password, and checks that the e-mail is not already
-   taken and that the e-mail and phone number match their regexes.
-3. On success the user row is inserted and the visitor is sent to `login.php`.
-4. `login_submit.php` hashes the submitted password and looks for a matching `email` + `password`
-   row. A hit populates the session and redirects to `products.php`; a miss bounces back to
-   `login.php` with an error message in the query string.
+   The second file adds the `category` and `image` columns that the search page needs. You can also
+   do all of this through phpMyAdmin if you prefer clicking.
 
-### Browsing and the cart
+3. Open `includes/common.php` and fix the connection line to match your setup:
 
-`products.php` includes `check-if-added.php`, which exposes `check_if_added_to_cart($item_id)`.
-For each of the 12 product cards the page decides between three states:
+   ```php
+   $con = mysqli_connect("localhost:3307", "root", "", "store");
+   ```
 
-- **not logged in** → a *Buy Now* button pointing at `login.php`
-- **logged in, already in cart** → a disabled green *Added to cart* button
-- **logged in, not in cart** → an *Add to cart* link to `cart-add.php?id=<item_id>`
+   XAMPP and WAMP normally use port 3306 with user `root` and no password. MAMP uses 8889 with
+   `root`/`root`. Change 3307 to whatever yours is actually running on.
 
-`cart-add.php` inserts a `user_item` row with `status = 1`; `cart-remove.php` deletes the matching
-row. Both redirect straight back so the page always reflects current state.
+4. Go to `http://localhost/lifestyle-store/index.php`.
 
-### Checkout
-
-`cart.php` joins `user_item` to `items` to list the cart and sum the prices, and builds a
-*Confirm Order* link carrying the item IDs. `success.php` then runs a single `UPDATE` that flips
-those rows from status `1` to status `2`, which is what makes them appear in `orderhistory.php`.
-
-### Access control
-
-Pages that require a session (`cart.php`, `settings.php`, `orderhistory.php`, `success.php`,
-`order.php`) begin with an `isset($_SESSION['email'])` check and redirect guests to `index.php`.
-`index.php`, `login.php` and `signup.php` do the inverse — a logged-in visitor is pushed on to
-`products.php`.
-
----
-
-## Setup & Installation
-
-### 1. Get a PHP + MySQL environment
-
-Install **[XAMPP](https://www.apachefriends.org/)** (or MAMP / WAMP / a LAMP stack) — anything that
-gives you Apache, PHP and MySQL.
-
-### 2. Place the project in the web root
-
-Clone or copy this folder into your server's document root:
-
-```bash
-# XAMPP on Windows
-git clone <your-repo-url> C:/xampp/htdocs/lifestyle-store
-
-# XAMPP on macOS
-git clone <your-repo-url> /Applications/XAMPP/htdocs/lifestyle-store
-
-# MAMP on macOS
-git clone <your-repo-url> /Applications/MAMP/htdocs/lifestyle-store
-```
-
-### 3. Create and import the database
-
-Start Apache and MySQL from your control panel, then either use phpMyAdmin
-(`http://localhost/phpmyadmin` → **New** → database name `store` → **Import** → `database/store.sql`)
-or the command line:
-
-```bash
-mysql -u root -p -e "CREATE DATABASE store;"
-mysql -u root -p store < database/store.sql
-```
-
-### 4. Point the app at your database
-
-Open `includes/common.php` and match the connection line to your setup:
-
-```php
-$con = mysqli_connect("localhost:3307", "root", "", "store") or die($mysqli_error($con));
-//                     ^host:port       ^user  ^pass ^database
-```
-
-Defaults differ by stack — **XAMPP** and **WAMP** use port `3306` with user `root` and an empty
-password; **MAMP** uses port `8889` with user `root` and password `root`. Change `3307` to whichever
-port your MySQL is listening on.
-
-### 5. Run it
-
-```
-http://localhost/lifestyle-store/index.php
-```
-
-<details>
-<summary>Alternative: PHP's built-in server (no Apache needed)</summary>
-
-If you have PHP and MySQL installed directly, you can skip Apache entirely:
-
-```bash
-mysql -u root -p -e "CREATE DATABASE store;"
-mysql -u root -p store < database/store.sql
-php -S localhost:8000
-```
-
-Then open `http://localhost:8000`.
-
-</details>
-
----
-
-## Demo Accounts
-
-The dump ships with six seeded users. Their passwords are MD5 hashes, so if you want to log in with a
-known password either register a fresh account through the sign-up page, or overwrite one:
+The seeded users all have MD5 passwords you don't know, so either sign up for a new account or
+overwrite one:
 
 ```sql
 UPDATE users SET password = MD5('YourPassword1') WHERE email = 'vish@gmail.com';
 ```
 
-Note that the sign-up form requires a password of at least 8 characters containing an uppercase
-letter, a lowercase letter and a digit, and a 10-digit phone number starting with 7, 8 or 9.
+Sign up needs a password of at least 8 characters with an uppercase letter, a lowercase letter and a
+digit, plus a 10 digit phone number starting with 7, 8 or 9.
 
----
+## Known issues
 
-## Known Limitations
+Things I'd fix given more time:
 
-This is a learning project, and a few things would need to change before it went anywhere near
-production:
-
-- **SQL injection.** Values are escaped with `mysqli_real_escape_string()` and interpolated straight
-  into query strings. Prepared statements (`mysqli_prepare` / `bind_param`) would be the correct fix.
-- **MD5 password hashing.** MD5 is fast and unsalted, which makes it unsuitable for passwords.
-  `password_hash()` / `password_verify()` are the modern replacements.
-- **Database credentials in source.** `includes/common.php` hard-codes host, user and password;
-  these belong in an untracked config file or environment variables.
-- **Errors passed through the URL.** Error messages travel as raw HTML in query strings and are
-  echoed back unescaped, which is an XSS vector.
-- **No quantities.** The cart tracks *which* items were added, not how many, so an item can only be
-  ordered once at a time.
-- **Contact form is inert.** `contact.php` has no `action`, so submissions are not stored or e-mailed.
-- **Order history timestamps.** `orderhistory.php` walks two independent result sets in parallel, so
-  the timestamp column can fall out of step with the item rows when there are many orders.
-
----
+- Most queries still build SQL by string concatenation with `mysqli_real_escape_string`. Only
+  `search.php` uses prepared statements so far. The rest should follow.
+- Passwords are MD5, which is fast and unsalted and therefore a bad choice. `password_hash()` and
+  `password_verify()` are the right answer.
+- The database credentials are hardcoded in `includes/common.php` instead of sitting in a config
+  file that isn't committed.
+- Error messages travel through the URL as raw HTML and get echoed back unescaped, which is an XSS
+  hole.
+- The cart tracks which items you added, not how many, so you can only order one of each at a time.
+- The contact form has no `action`, so nothing happens when you submit it.
+- `orderhistory.php` loops over two separate result sets side by side, so with enough orders the
+  timestamp column drifts out of line with the item rows.
+- `check_if_added_to_cart()` opens a new database connection every time it's called, so a page of 12
+  products opens 12 connections.
 
 ## Credits
 
-### Upstream project
+Based on [this e-commerce project](https://github.com/VishwaduttMS/eCommerce-website-using-HTML-CSS-PHP-and-MySQL-database)
+by Vishwadutt M S, which is where the original pages, the MySQL schema and the cart and order logic
+came from. There's no licence file on that repo, so I'm using it for coursework rather than
+republishing it, and I've left its commit history in place here.
 
-This project builds on
-[eCommerce-website-using-HTML-CSS-PHP-and-MySQL-database](https://github.com/VishwaduttMS/eCommerce-website-using-HTML-CSS-PHP-and-MySQL-database)
-by Vishwadutt M S (2020), which supplied the original page set, the MySQL schema, and the
-session/cart/order logic that this version still rests on. The upstream repository carries no
-licence file, so it is used here for coursework rather than redistribution, and its original
-commit history is preserved intact in this repository.
+Bootstrap 3, Glyphicons and jQuery are all MIT licensed.
 
-### Third-party components
+What I added on top: reorganised the flat root into `css/`, `js/`, `img/`, `fonts/`, `includes/`,
+`database/` and `screenshots/`; wrote this README and took the screenshots; rebranded the site and
+rewrote the About and Contact pages; built the product search (`search.php`, the migration and the
+card renderer); fixed a stray `?>` that was printing into the navbar and a `source.GIF` reference
+that broke on case sensitive filesystems; added a `.gitignore` and dropped the committed `Thumbs.db`.
 
-- **Bootstrap 3** and **Glyphicons Halflings** — MIT licence
-- **jQuery** — MIT licence
-- Product and banner imagery — see `img/`
-
-### What I contributed
-
-- **Project structure.** Flat upstream root reorganised into `css/`, `js/`, `img/`, `fonts/`,
-  `includes/`, `database/` and `screenshots/`, with all include paths rewritten to match.
-- **Documentation.** This README — feature list, tech stack, schema walkthrough, request-flow
-  explanation, setup instructions, demo accounts and a known-limitations audit — plus
-  `screenshots/` covering all ten interface pages.
-- **Branding and content.** Rebranded to *Lifestyle Store*: rewritten About and Contact page copy,
-  new imagery, restyled layout, and updated contact details throughout.
-- **Bug fixes.** Removed a stray `?>` in `includes/header.php` that rendered literally in the navbar
-  for logged-in users; corrected the login page image reference (`img/source.GIF` → `img/source.gif`)
-  so it resolves on case-sensitive filesystems.
-- **Repository hygiene.** Added `.gitignore` and removed the committed `Thumbs.db`.
-
-Across 91 files, the changes total roughly 9,800 insertions against the upstream baseline. To see
-them directly:
+To see exactly what changed from the original:
 
 ```bash
 git diff 9652f95 HEAD --stat
