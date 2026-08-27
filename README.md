@@ -81,6 +81,7 @@ Every confirmed order for the logged-in user, with price and timestamp.
 | **User registration** | Sign-up form with e-mail, password-strength and phone-number validation. Duplicate e-mails are rejected. |
 | **Authentication** | Session-based login/logout. Passwords are hashed before being stored. |
 | **Product catalogue** | 12 products in 3 categories (Cameras, Watches, Shirts), served from the `items` table. |
+| **Product search** | Search by name with category, price-range and sort filters. Built on prepared statements, so search input is bound rather than interpolated. |
 | **Shopping cart** | Add and remove items, live total calculation, and a guard so the same item cannot be added twice. |
 | **Order placement** | Confirming the cart flips those rows to `Confirmed` and shows a thank-you page. |
 | **Order history** | Table of all confirmed orders for the logged-in user, with timestamps and a grand total. |
@@ -108,6 +109,7 @@ Every confirmed order for the logged-in user, with price and timestamp.
 .
 ├── index.php              # Landing page (redirects to products.php if logged in)
 ├── products.php           # Product catalogue with add-to-cart buttons
+├── search.php             # Product search with category/price/sort filters
 ├── login.php              # Login form
 ├── login_submit.php       # Verifies credentials, creates the session
 ├── signup.php             # Registration form
@@ -129,10 +131,13 @@ Every confirmed order for the logged-in user, with price and timestamp.
 │   ├── common.php         # DB connection + session bootstrap (required by every page)
 │   ├── header.php         # Navbar, rendered per login state
 │   ├── footer.php         # Footer + Google Translate widget
-│   └── check-if-added.php # check_if_added_to_cart($item_id) helper
+│   ├── check-if-added.php # check_if_added_to_cart($item_id) helper
+│   └── product-card.php   # render_product_card($item) thumbnail renderer
 │
 ├── database/
-│   └── store.sql          # Schema + seed data (phpMyAdmin dump)
+│   ├── store.sql          # Schema + seed data (phpMyAdmin dump)
+│   └── migrations/
+│       └── 001_add_product_search.sql   # Adds items.category, items.image + indexes
 │
 ├── css/                   # bootstrap.css, bootstrap.min.css, style.css, index.css
 ├── js/                    # jquery.js, bootstrap.js, bootstrap.min.js

@@ -9,6 +9,15 @@
             <a class="navbar-brand" href="index.php">Lifestyle Store</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
+            <form class="navbar-form navbar-left" action="search.php" method="get" role="search">
+                <div class="form-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search products"
+                           value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q'], ENT_QUOTES, 'UTF-8') : ''; ?>">
+                </div>
+                <button type="submit" class="btn btn-default">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </form>
             <ul class="nav navbar-nav navbar-right">
                 <?php
                 if (isset($_SESSION['email'])) {
